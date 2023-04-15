@@ -1,5 +1,5 @@
 "use strict";
-class Countdown {
+class CounterTimeDays {
     constructor() {
         this.startTime = Date.now();
         this.elapsedTime = 0;
@@ -8,7 +8,9 @@ class Countdown {
             this.elapsedTime = parseInt(storedElapsedTime, 10);
             this.startTime -= this.elapsedTime;
         }
-        this.intervalId = setInterval(this.updateCounter.bind(this), 1000);
+        this.intervalId = setInterval(() => {
+            this.updateCounter();
+        }, 1000);
     }
     updateCounter() {
         const currentTime = Date.now();
@@ -35,20 +37,21 @@ class Countdown {
         const seconds = Math.floor(totalSeconds % 60);
         return { days, hours, minutes, seconds };
     }
-    formatNumber(num) {
-        return num.toString().padStart(2, '0');
+    formatNumber(number) {
+        let formattedNumber = number.toString().padStart(2, '0');
+        return formattedNumber;
     }
     resetCounter() {
         clearInterval(this.intervalId);
         this.startTime = Date.now();
         this.elapsedTime = 0;
         localStorage.removeItem('elapsedTime');
-        this.intervalId = setInterval(this.updateCounter.bind(this), 1000);
+        this.intervalId = setInterval(() => {
+            this.updateCounter();
+        }, 1000);
         this.updateCounterDisplay(0, 0, 0, 0);
     }
 }
-const countdown = new Countdown();
-function resetCountdown() {
-    countdown.resetCounter();
-}
+const count = new CounterTimeDays();
+const resetCountdown = () => count.resetCounter();
 //# sourceMappingURL=main.js.map

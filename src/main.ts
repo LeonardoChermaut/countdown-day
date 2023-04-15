@@ -1,23 +1,28 @@
-class Countdown {
+class CounterTimeDays {
   private startTime: number;
-  private intervalId: NodeJS.Timer;
+  private intervalId: number;
   private elapsedTime: number;
 
   constructor() {
     this.startTime = Date.now();
     this.elapsedTime = 0;
     const storedElapsedTime = localStorage.getItem('elapsedTime');
+
     if (storedElapsedTime !== null) {
       this.elapsedTime = parseInt(storedElapsedTime, 10);
       this.startTime -= this.elapsedTime;
     }
-    this.intervalId = setInterval(this.updateCounter.bind(this), 1000);
+
+    this.intervalId = setInterval(() => {
+      this.updateCounter();
+    }, 1000);
   }
 
   private updateCounter() {
     const currentTime = Date.now();
     this.elapsedTime = currentTime - this.startTime;
     localStorage.setItem('elapsedTime', this.elapsedTime.toString());
+
     const { days, hours, minutes, seconds } = this.getCounterValues();
 
     this.updateCounterDisplay(days, hours, minutes, seconds);
@@ -27,13 +32,13 @@ class Countdown {
     days: number,
     hours: number,
     minutes: number,
-    seconds: number,
+    seconds: number
   ) {
     const daysElem = document.getElementById('days');
     const hoursElem = document.getElementById('hours');
     const minutesElem = document.getElementById('minutes');
     const secondsElem = document.getElementById('seconds');
-    
+
     daysElem!.innerText = this.formatNumber(days);
     hoursElem!.innerText = this.formatNumber(hours);
     minutesElem!.innerText = this.formatNumber(minutes);
@@ -49,21 +54,25 @@ class Countdown {
     return { days, hours, minutes, seconds };
   }
 
-  private formatNumber(num: number): string {
-    let formatedNumber = num.toString().padStart(2, '0');
-    return formatedNumber;
+  private formatNumber(number: number): string {
+    let formattedNumber = number.toString().padStart(2, '0');
+    return formattedNumber;
   }
 
-  public resetCounter() {
+  resetCounter() {
     clearInterval(this.intervalId);
     this.startTime = Date.now();
     this.elapsedTime = 0;
     localStorage.removeItem('elapsedTime');
-    this.intervalId = setInterval(this.updateCounter.bind(this), 1000);
+
+    this.intervalId = setInterval(() => {
+      this.updateCounter();
+    }, 1000);
+
     this.updateCounterDisplay(0, 0, 0, 0);
   }
 }
 
-const countdown = new Countdown();
+const count = new CounterTimeDays();
 
-const resetCountdown = () => countdown.resetCounter();
+const resetCountdown = () => count.resetCounter();
